@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InfoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,18 +19,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/hello/{name}', static function (string $name): string {
-    return "Hello, {$name}";
+Route::group(['prefix' => 'guest'], static function() {
+    Route::get('/news', [NewsController::class, 'index'])
+        ->name('news');
+    Route::get('/news/{id}/show', [NewsController::class, 'show'])
+        ->where('id', '\d+')
+        ->name('news.show');
+
+    Route::get('categories', [CategoryController::class, 'index'])
+        ->name('categories');
+    Route::get('/categories/{id}/show', [CategoryController::class, 'show'])
+        ->where('id', '\d+')
+        ->name('categories.show');
+
+    Route::get('/info', [InfoController::class, 'info'])
+        ->name('info');
 });
 
-Route::get('/info', function () {
-    return "This is info";
-});
-
-Route::get('/news', function () {
-    return "This is news";
-});
-
-Route::get('/news/{id}', static function (int $id): string {
-    return "This is news with id {$id}";
-});
