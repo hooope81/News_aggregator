@@ -5,6 +5,8 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\Admin\IndexController as AdminController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,9 +23,11 @@ Route::get('/', function () {
 });
 
 //admin routes
-Route::group(['prefix' => 'admin'], static function() {
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function() {
     Route::get('/', AdminController::class)
-        ->name('admin.index');
+        ->name('index');
+    Route::resource('categories', AdminCategoryController::class);
+    Route::resource('news', AdminNewsController::class);
 });
 
 Route::group(['prefix' => 'guest'], static function() {
@@ -41,5 +45,13 @@ Route::group(['prefix' => 'guest'], static function() {
 
     Route::get('/info', [InfoController::class, 'info'])
         ->name('info');
+    Route::get('/info/createUserForm', [InfoController::class, 'createUserForm'])
+        ->name('createUserForm');
+    Route::get('/info/createOrderForm', [InfoController::class, 'createOrderForm'])
+        ->name('createOrderForm');
+    Route::post('/info/storeUserForm', [InfoController::class, 'storeUserForm'])
+        ->name('storeUserForm');
+    Route::post('/info/storeOrderForm', [InfoController::class, 'storeOrderForm'])
+        ->name('storeOrderForm');
 });
 
