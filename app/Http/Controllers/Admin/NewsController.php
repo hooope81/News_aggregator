@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\News;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+
 
 class NewsController extends Controller
 {
@@ -16,9 +19,15 @@ class NewsController extends Controller
      *
      * @return View
      */
-    public function index():View
+    public function index(): View
     {
-        return \view('admin.news.index');
+        $model = new News();
+        $newsList = $model->getNews();
+
+        return \view('admin.news.index', [
+            'newsList' => $newsList
+        ]);
+
     }
 
     /**

@@ -3,18 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
-        //
+        $model = new Category();
+        $categoryList = $model->getCategories();
+
+        return \view('admin.categories.index', [
+            'categoriesList' => $categoryList
+        ]);
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Http\Controllers\InfoController;
 use App\Http\Controllers\Admin\IndexController as AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\SourceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,6 +29,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function() {
         ->name('index');
     Route::resource('categories', AdminCategoryController::class);
     Route::resource('news', AdminNewsController::class);
+    Route::get('/sources', [SourceController::class, 'index'])
+        ->name('sources');
 });
 
 Route::group(['prefix' => 'guest'], static function() {
