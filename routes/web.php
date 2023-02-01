@@ -29,8 +29,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function() {
         ->name('index');
     Route::resource('categories', AdminCategoryController::class);
     Route::resource('news', AdminNewsController::class);
-    Route::get('/sources', [SourceController::class, 'index'])
-        ->name('sources');
+    Route::resource('sources', SourceController::class);
+
 });
 
 Route::group(['prefix' => 'guest'], static function() {

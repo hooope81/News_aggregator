@@ -15,13 +15,8 @@ class Source extends Model
 
     protected $table = "sources";
 
-    public function getSources(): Collection
-    {
-        return DB::table($this->table)->get();
-    }
-
-    public function getSourcesById(int $id): mixed
-    {
-        return DB::table($this->table)->find($id);
-    }
+    protected $fillable = [
+        'title',
+        'URL'
+    ];
 }
