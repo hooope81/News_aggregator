@@ -2,6 +2,7 @@
 
 namespace tests\Feature\Http\Controllers;
 
+use App\Models\News;
 use Tests\TestCase;
 
 class NewsControllerTest extends TestCase
@@ -18,5 +19,12 @@ class NewsControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testCreateSaveSuccessData(): void
+    {
+        $news = News::factory()->definition();
 
+        $response = $this->post(route('admin.news.store'), $news);
+
+        $response->assertStatus(200);
+    }
 }

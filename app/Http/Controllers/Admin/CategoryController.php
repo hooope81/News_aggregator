@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\CreateRequest;
+use App\Http\Requests\Category\EditRequest;
 use App\Models\Category;
 use App\QueryBuilders\CategoriesQueryBuilder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
@@ -42,23 +45,20 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param CreateRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required'
-        ]);
+        $category = Category::create($request->validated());
 
-        $category = new Category($request->all());
+        if ($category) {
 
-        if ($category->save()) {
             return \redirect()->route('admin.categories.index')
-                ->with('success', 'Категория успешно добавлена');
+                ->with('success', __('messages.admin.categories.success'));
         }
 
-        return \back()->with('error', 'Не удалось сохранить запись');
+        return \back()->with('error', __('messages.admin.categories.fail'));
     }
 
     /**
@@ -91,9 +91,9 @@ class CategoryController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function update(Request $request, Category $category): RedirectResponse
+    public function update(EditRequest $request, Category $category): RedirectResponse
     {
-        $category = $category->fill($request->all());
+        $category = $category->fill($request->validated());
 
         if ($category->save()) {
             return \redirect()->route('admin.categories.index')
@@ -106,11 +106,20 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Category $category
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Category $category): JsonResponse
     {
-        //
+        try {
+            $category->delete();
+
+            return \response()->json('ok');
+
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+
+            return response()->json('error', 400);
+        }
     }
 }

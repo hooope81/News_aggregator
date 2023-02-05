@@ -16,11 +16,11 @@
             @csrf
             <div class="form-group">
                 <label for="title">Заголовок</label>
-                <input type="text" id="title" class="form-control" name="title" value="{{ old('title') }}">
+                <input type="text" id="title" class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') }}">
             </div>
             <div class="form-group">
                 <label for="URL">Ссылка</label>
-                <input type="text" id="URL" class="form-control" name="URL" value="{{ old('URL') }}">
+                <input type="text" id="URL" class="form-control @error('URL') is-invalid @enderror" name="URL" value="{{ old('URL') }}">
             </div>
 
             <br>

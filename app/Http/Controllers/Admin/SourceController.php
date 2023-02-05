@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Source\CreateRequest;
+use App\Http\Requests\Source\EditRequest;
 use App\Models\Source;
 use App\QueryBuilders\SourcesQueryBuilder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
@@ -40,23 +45,20 @@ class SourceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param CreateRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required'
-        ]);
+        $source = Source::create($request->validated());
 
-        $source = new Source($request->all());
+        if ($source) {
 
-        if ($source->save()) {
             return \redirect()->route('admin.sources.index')
-                ->with('success', 'Источник успешно добавлен');
+                ->with('success', __('messages.admin.sources.success'));
         }
 
-        return \back()->with('error', 'Не удалось сохранить запись');
+        return \back()->with('error', __('messages.admin.sources.fail'));
     }
 
     /**
@@ -86,13 +88,13 @@ class SourceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param EditRequest $request
      * @param Source $source
      * @return RedirectResponse
      */
-    public function update(Request $request, Source $source): RedirectResponse
+    public function update(EditRequest $request, Source $source): RedirectResponse
     {
-        $source = $source->fill($request->all());
+        $source = $source->fill($request->validated());
 
         if ($source->save()) {
             return \redirect()->route('admin.sources.index')
@@ -105,11 +107,20 @@ class SourceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param Source $source
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Source $source): JsonResponse
     {
-        //
+        try {
+            $source->delete();
+
+            return \response()->json('ok');
+
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+
+            return response()->json('error', 400);
+        }
     }
 }
