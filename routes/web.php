@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CategoryController;
@@ -8,6 +10,9 @@ use App\Http\Controllers\Admin\IndexController as AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\SourceController;
+use App\Http\Controllers\Account\IndexController as AccountController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\UsersController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,14 +28,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//admin routes
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function() {
-    Route::get('/', AdminController::class)
-        ->name('index');
-    Route::resource('categories', AdminCategoryController::class);
-    Route::resource('news', AdminNewsController::class);
-    Route::resource('sources', SourceController::class);
+Route::group(['middleware' => 'auth'],  static function () {
+    Route::get('/logout', [LoginController::class, 'logout'])
+    ->name('account.logout');
+    Route::get('/account', AccountController::class)
+    ->name('account');
 
+    //admin routes
+    Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'is.admin'], static function () {
+        Route::get('/', AdminController::class)
+            ->name('index');
+        Route::resource('categories', AdminCategoryController::class);
+        Route::resource('news', AdminNewsController::class);
+        Route::resource('sources', SourceController::class);
+        Route::resource('users', UsersController::class);
+    });
 });
 
 Route::group(['prefix' => 'guest'], static function() {
@@ -58,3 +70,7 @@ Route::group(['prefix' => 'guest'], static function() {
         ->name('storeOrderForm');
 });
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
