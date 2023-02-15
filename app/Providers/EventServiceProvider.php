@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
+use App\Events\LoginEvent;
+use App\Listeners\LastLoginUpateListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +22,15 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        LoginEvent::class => [
+            LastLoginUpateListener::class,
+        ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+                // ... other providers
+                \SocialiteProviders\VKontakte\VKontakteExtendSocialite::class.'@handle',
+                \SocialiteProviders\GitHub\GitHubExtendSocialite::class.'@handle',
+        ],
+
     ];
 
     /**
@@ -25,7 +38,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         //
     }
@@ -35,7 +48,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return bool
      */
-    public function shouldDiscoverEvents()
+    public function shouldDiscoverEvents(): bool
     {
         return false;
     }
