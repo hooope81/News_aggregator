@@ -15,5 +15,5 @@ interface Parser
     /**
      * @return array
      */
-    public function getLink(): array;
+    public function saveParseData(): void;
 }

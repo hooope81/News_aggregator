@@ -7,6 +7,7 @@
             <p>{{ $item->description }}</p>
             <p><a class="btn btn-secondary" href="{{ route('categories.show', ['id' => $item->id]) }}" role="button">Читать далее &raquo;</a></p>
             <br>
+
         </div>
 @endforeach
     </div>

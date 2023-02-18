@@ -5,15 +5,13 @@
     <div class="col-md-6">
         <div class="card flex-md-row mb-4 box-shadow h-md-250">
             <div class="card-body d-flex flex-column align-items-start">
-                <strong class="d-inline-block mb-2 text-primary">{{ $n['author'] }}</strong>
+                <strong class="d-inline-block mb-2 text-primary">{{ $n->autor }}</strong>
                 <h3 class="mb-0">
-                    <a class="text-dark" href="{{ route('news.show', ['id' => $n['id']]) }}">{{ $n['title'] }}</a>
+                    <a class="text-dark" href="{{ route('news.show', ['news' => $n]) }}">{{ $n->title }}</a>
                 </h3>
-                <div class="mb-1 text-muted">{{ $n['created_at'] }}</div>
-                <p class="card-text mb-auto">{{ $n['description'] }}</p>
-                <a href="{{ route('news.show', ['id' => $n['id']]) }}">Читать далее</a>
+                <br>
+                <div class="mb-1 text-muted">{{ $n->created_at }}</div>
             </div>
-
         </div>
     </div>
 @empty

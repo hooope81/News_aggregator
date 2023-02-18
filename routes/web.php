@@ -47,38 +47,24 @@ Route::group(['middleware' => 'auth'],  static function () {
         Route::resource('sources', SourceController::class);
         Route::resource('users', UsersController::class);
     });
+
+
+    Route::group(['prefix' => 'guest'], static function() {
+        Route::get('/news', [NewsController::class, 'index'])
+            ->name('news');
+        Route::get('/news/{news}', [NewsController::class, 'show'])
+            ->where('news', '\d+')
+            ->name('news.show');
+
+        Route::get('categories', [CategoryController::class, 'index'])
+            ->name('categories');
+        Route::get('/categories/{id}/show', [CategoryController::class, 'show'])
+            ->where('id', '\d+')
+            ->name('categories.show');
+    });
 });
-
-Route::group(['prefix' => 'guest'], static function() {
-    Route::get('/news', [NewsController::class, 'index'])
-        ->name('news');
-    Route::get('/news/{id}/show', [NewsController::class, 'show'])
-        ->where('id', '\d+')
-        ->name('news.show');
-
-    Route::get('categories', [CategoryController::class, 'index'])
-        ->name('categories');
-    Route::get('/categories/{id}/show', [CategoryController::class, 'show'])
-        ->where('id', '\d+')
-        ->name('categories.show');
-
-    Route::get('/info', [InfoController::class, 'info'])
-        ->name('info');
-    Route::get('/info/createUserForm', [InfoController::class, 'createUserForm'])
-        ->name('createUserForm');
-    Route::get('/info/createOrderForm', [InfoController::class, 'createOrderForm'])
-        ->name('createOrderForm');
-    Route::post('/info/storeUserForm', [InfoController::class, 'storeUserForm'])
-        ->name('storeUserForm');
-    Route::post('/info/storeOrderForm', [InfoController::class, 'storeOrderForm'])
-        ->name('storeOrderForm');
-});
-
 
 Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 
 Route::group(['middleware' => 'guest'], function() {
     Route::get('/auth/redirect/{driver}', [SocialProvidersController::class, 'redirect'])
@@ -87,4 +73,9 @@ Route::group(['middleware' => 'guest'], function() {
 
     Route::get('/auth/callback/{driver}', [SocialProvidersController::class, 'callback'])
         ->where('driver', '\w+');
+});
+
+
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
 });

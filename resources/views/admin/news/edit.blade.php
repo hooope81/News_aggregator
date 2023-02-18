@@ -12,7 +12,7 @@
                 <x-alert type="danger" :message="$error"></x-alert>
             @endforeach
         @endif
-        <form method="post" action="{{ route('admin.news.update', ['news' => $news]) }}">
+        <form method="post" action="{{ route('admin.news.update', ['news' => $news]) }}" enctype="multipart/form-data">
             @csrf
             @method('put')
             <div class="form-group">
@@ -49,7 +49,7 @@
             </div>
             <div class="form-group">
                 <label for="description">Описание</label>
-                <textarea id="description" class="form-control" name="description">{!! $news->description !!}</textarea>
+                <textarea id="description" class="form-control" name="description">{{ $news->description }}</textarea>
             </div>
 
             <br>
@@ -60,3 +60,9 @@
 
 @endsection
 
+@push('js')
+    <script src="https://cdn.ckeditor.com/4.11.2/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('description', {filebrowserImageBrowseUrl: '/file-manager/ckeditor'});
+    </script>
+@endpush

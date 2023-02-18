@@ -8,9 +8,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-
 class News extends Model
 {
     use HasFactory;
@@ -40,8 +37,7 @@ class News extends Model
     {
         return $this->belongsToMany(
             Category::class,
-            'category_has_news'
-
+            'category_has_news',
         );
     }
 
